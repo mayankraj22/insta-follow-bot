@@ -94,33 +94,33 @@ def main():
         # page.wait_for_selector('input[name="username"]', timeout=60000)
 # REPLACEMENT START
 
-page.screenshot(path="login_debug.png")
-print("Loaded URL:", page.url)
+        page.screenshot(path="login_debug.png")
+        print("Loaded URL:", page.url)
 
-selectors = [
-    'input[name="username"]',
-    'input[aria-label="Phone number, username, or email"]',
-    'input[type="text"]'
-]
+        selectors = [
+            'input[name="username"]',
+            'input[aria-label="Phone number, username, or email"]',
+            'input[type="text"]'
+        ]
 
-found = False
+        found = False
 
-for selector in selectors:
-    try:
-        page.wait_for_selector(selector, timeout=15000)
-        page.fill(selector, USERNAME)
-        found = True
-        print("Username field found:", selector)
-        break
-    except:
-        continue
+        for selector in selectors:
+            try:
+                page.wait_for_selector(selector, timeout=15000)
+                page.fill(selector, USERNAME)
+                found = True
+                print("Username field found:", selector)
+                break
+            except:
+                continue
 
-if not found:
-    page.screenshot(path="failed_login.png")
-    raise Exception("No login field found. Check screenshots in Actions artifacts.")
+        if not found:
+            page.screenshot(path="failed_login.png")
+            raise Exception("No login field found. Check screenshots in Actions artifacts.")
 
-page.locator('input[type="password"]').fill(PASSWORD)
-page.locator('button[type="submit"]').click()
+        page.locator('input[type="password"]').fill(PASSWORD)
+        page.locator('button[type="submit"]').click()
 
 # REPLACEMENT END
 # FIX 1: Add retry logic (Lines 73-87 replacement)

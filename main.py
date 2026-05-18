@@ -65,10 +65,13 @@ def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-
-        page.goto("https://www.instagram.com/accounts/login/")
-        time.sleep(5)
-
+# Begin of changes 
+# Increasing the timeout to 60sec to allow for slower connections or Instagram's rate limits
+        # page.goto("https://www.instagram.com/accounts/login/")
+        # time.sleep(5)
+        page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
+        page.wait_for_selector('input[name="username"]', timeout=60000)
+# End of changes 
         page.fill('input[name="username"]', USERNAME)
         page.fill('input[name="password"]', PASSWORD)
         page.click('button[type="submit"]')

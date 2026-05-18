@@ -65,25 +65,39 @@ def main():
     with sync_playwright() as p:
 # FIX 2: Add stealth arguments to browser launch (Line 66)
         browser = p.chromium.launch(headless=True,
-            args=["--disable-blink-features=AutomationControlled"]
+           args=[
+                "--disable-blink-features=AutomationControlled",
+                "--disable-dev-shm-usage",
+                "--no-sandbox",
+            ]
         )
-        page = browser.new_page()
+        context = browser.new_context(
+            viewport={"width": 1920, "height": 1080},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+        # Bypass Playwright detection
+        context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => false})")
+        
+        page = context.new_page()
+        # page = browser.new_page()
 # Begin of changes 
 # Increasing the timeout to 60sec to allow for slower connections or Instagram's rate limits
         # page.goto("https://www.instagram.com/accounts/login/")
         # time.sleep(5)
         # page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
-        page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
-        page.screenshot(path="debug_login.png")  # Add this
-        page.screenshot(path="debug_login.png")  # Add this
-        print("Page loaded, attempting to find username input...")  # Add this
+        
+        # page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
+        page.goto("https://www.instagram.com/accounts/login/", wait_until="domcontentloaded", timeout=30000)
+        time.sleep(2)  # Additional wait for dynamic content
+        # page.screenshot(path="debug_login.png")  # Add this
+        # print("Page loaded, attempting to find username input...")  # Add this
         # page.wait_for_selector('input[name="username"]', timeout=60000)
 
 # FIX 1: Add retry logic (Lines 73-87 replacement)
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                page.wait_for_selector('input[name="username"]', timeout=60000)
+                page.wait_for_selector('input[name="username"]', timeout=30000)
                 break
             except Exception as e:
                 print(f"Attempt {attempt + 1} failed: {str(e)}")

@@ -63,15 +63,36 @@ def main():
     known = load_db()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+# FIX 2: Add stealth arguments to browser launch (Line 66)
+        browser = p.chromium.launch(headless=True,
+            args=["--disable-blink-features=AutomationControlled"]
+        )
         page = browser.new_page()
 # Begin of changes 
 # Increasing the timeout to 60sec to allow for slower connections or Instagram's rate limits
         # page.goto("https://www.instagram.com/accounts/login/")
         # time.sleep(5)
+        # page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
         page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
-        page.wait_for_selector('input[name="username"]', timeout=60000)
-# End of changes 
+        page.screenshot(path="debug_login.png")  # Add this
+        page.screenshot(path="debug_login.png")  # Add this
+        print("Page loaded, attempting to find username input...")  # Add this
+        # page.wait_for_selector('input[name="username"]', timeout=60000)
+
+# FIX 1: Add retry logic (Lines 73-87 replacement)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                page.wait_for_selector('input[name="username"]', timeout=60000)
+                break
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed: {str(e)}")
+                if attempt < max_retries - 1:
+                    page.reload()
+                    time.sleep(3)
+                else:
+                    raise Exception("Failed to load login page after multiple attempts")
+# End of changes                 
         page.fill('input[name="username"]', USERNAME)
         page.fill('input[name="password"]', PASSWORD)
         page.click('button[type="submit"]')

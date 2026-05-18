@@ -17,3 +17,11 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
+# Added below to upload screenshots for debugging
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: debug-screens
+          path: |
+            login_debug.png
+            failed_login.png

@@ -88,28 +88,58 @@ def main():
         
         # page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
         page.goto("https://www.instagram.com/accounts/login/", wait_until="domcontentloaded", timeout=30000)
-        time.sleep(2)  # Additional wait for dynamic content
+        time.sleep(5)  # Additional wait for dynamic content
         # page.screenshot(path="debug_login.png")  # Add this
         # print("Page loaded, attempting to find username input...")  # Add this
         # page.wait_for_selector('input[name="username"]', timeout=60000)
+# REPLACEMENT START
 
+page.screenshot(path="login_debug.png")
+print("Loaded URL:", page.url)
+
+selectors = [
+    'input[name="username"]',
+    'input[aria-label="Phone number, username, or email"]',
+    'input[type="text"]'
+]
+
+found = False
+
+for selector in selectors:
+    try:
+        page.wait_for_selector(selector, timeout=15000)
+        page.fill(selector, USERNAME)
+        found = True
+        print("Username field found:", selector)
+        break
+    except:
+        continue
+
+if not found:
+    page.screenshot(path="failed_login.png")
+    raise Exception("No login field found. Check screenshots in Actions artifacts.")
+
+page.locator('input[type="password"]').fill(PASSWORD)
+page.locator('button[type="submit"]').click()
+
+# REPLACEMENT END
 # FIX 1: Add retry logic (Lines 73-87 replacement)
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                page.wait_for_selector('input[name="username"]', timeout=30000)
-                break
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed: {str(e)}")
-                if attempt < max_retries - 1:
-                    page.reload()
-                    time.sleep(3)
-                else:
-                    raise Exception("Failed to load login page after multiple attempts")
+        # max_retries = 3
+        # for attempt in range(max_retries):
+        #     try:
+        #         page.wait_for_selector('input[name="username"]', timeout=30000)
+        #         break
+        #     except Exception as e:
+        #         print(f"Attempt {attempt + 1} failed: {str(e)}")
+        #         if attempt < max_retries - 1:
+        #             page.reload()
+        #             time.sleep(3)
+        #         else:
+        #             raise Exception("Failed to load login page after multiple attempts")
 # End of changes                 
-        page.fill('input[name="username"]', USERNAME)
-        page.fill('input[name="password"]', PASSWORD)
-        page.click('button[type="submit"]')
+        # page.fill('input[name="username"]', USERNAME)
+        # page.fill('input[name="password"]', PASSWORD)
+        # page.click('button[type="submit"]')
 
         time.sleep(10)
 

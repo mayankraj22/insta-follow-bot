@@ -4,10 +4,10 @@ import json
 import time
 from playwright.sync_api import sync_playwright
 
-USERNAME = os.getenv("USERNAME")#For running it locally comment
-# USERNAME = "username_here" #For running it locally uncomment
-PASSWORD = os.getenv("PASSWORD")#For running it locally comment
-# PASSWORD = "password_here" #For running it locally uncomment
+# USERNAME = os.getenv("USERNAME")#For running it locally comment
+USERNAME = "username" #For running it locally uncomment
+# PASSWORD = os.getenv("PASSWORD")#For running it locally comment
+PASSWORD = "password" #For running it locally uncomment
 
 DB_FILE = "followers.json"
 
@@ -52,7 +52,7 @@ def scrape_followers(page):
 
     time.sleep(8)
 
-    page.screenshot(path="profile_loaded.png")
+    # page.screenshot(path="profile_loaded.png") #For debugging purpose
 
     follower_selectors = [
         f'a[href="/{USERNAME}/followers/"]',
@@ -90,7 +90,7 @@ def scrape_followers(page):
 
     if not opened:
 
-        page.screenshot(path="followers_fail.png")
+        # page.screenshot(path="followers_fail.png") #For debugging purpose
 
         input(
             "Followers popup not opened. Open manually then press Enter..."
@@ -205,157 +205,6 @@ def scrape_followers(page):
 
 def send_dm(page, username):
 
-    # try:
-
-    #     print(f"Opening profile: {username}")
-
-    #     page.goto(
-    #         f"https://www.instagram.com/{username}/",
-    #         wait_until="domcontentloaded",
-    #         timeout=90000
-    #     )
-
-    #     time.sleep(10)
-
-    #     # --------------------------------
-    #     # CLICK MESSAGE BUTTON
-    #     # --------------------------------
-
-    #     clicked = False
-
-    #     message_buttons = [
-
-    #         'div[role="button"]:has-text("Message")',
-
-    #         'text=Message'
-    #     ]
-
-    #     for btn in message_buttons:
-
-    #         try:
-
-    #             button = page.locator(btn).first
-
-    #             if button.is_visible(timeout=5000):
-
-    #                 button.click(force=True)
-
-    #                 clicked = True
-
-    #                 print("Message button clicked")
-
-    #                 break
-
-    #         except Exception as e:
-
-    #             print("MESSAGE BUTTON FAILED:", btn, e)
-
-    #     if not clicked:
-
-    #         print("Message button not found:", username)
-    #         return
-
-    #     # WAIT FOR CHAT THREAD TO LOAD
-    #     time.sleep(12)
-
-    #     # --------------------------------
-    #     # HANDLE OPTIONAL POPUPS
-    #     # --------------------------------
-
-    #     popup_buttons = [
-    #         'text=Not Now',
-    #         'text=Cancel',
-    #         'text=Close',
-    #         'text=Continue'
-    #     ]
-
-    #     for popup in popup_buttons:
-
-    #         try:
-
-    #             page.locator(popup).first.click(timeout=2000)
-
-    #             print("Popup handled:", popup)
-
-    #             time.sleep(1)
-
-    #         except:
-    #             pass
-
-    #     # DEBUG
-    #     page.screenshot(path="after_message_click.png")
-
-    #     # --------------------------------
-    #     # FIND ACTUAL MESSAGE BOX
-    #     # --------------------------------
-
-    #     typed = False
-
-    #     selectors = [
-
-    #         'div[contenteditable="true"]',
-
-    #         'div[role="textbox"]',
-
-    #         'textarea'
-    #     ]
-
-    #     for selector in selectors:
-
-    #         try:
-
-    #             print("TRYING:", selector)
-
-    #             box = page.locator(selector).last
-
-    #             box.wait_for(
-    #                 state="visible",
-    #                 timeout=15000
-    #             )
-
-    #             box.click(force=True)
-
-    #             time.sleep(2)
-
-    #             # use keyboard typing only
-    #             page.keyboard.type(
-    #                 MESSAGE,
-    #                 delay=25
-    #             )
-
-    #             typed = True
-
-    #             print("MESSAGE TYPED")
-
-    #             break
-
-    #         except Exception as e:
-
-    #             print("SELECTOR FAILED:", selector, e)
-
-    #     if not typed:
-
-    #         page.screenshot(path="dm_box_fail.png")
-
-    #         print("Message input not found")
-
-    #         return
-
-    #     time.sleep(2)
-
-    #     # --------------------------------
-    #     # SEND MESSAGE
-    #     # --------------------------------
-
-    #     page.keyboard.press("Enter")
-
-    #     print("DM SENT:", username)
-
-    #     time.sleep(5)
-
-    # except Exception as e:
-
-    #     print("DM FAILED:", username, e)
 #----------Begin of Changes--------#
 
     try:
@@ -377,7 +226,7 @@ def send_dm(page, username):
         # reduce zoom for better UI visibility
         page.evaluate("document.body.style.zoom='70%'")
 
-        page.screenshot(path="profile_opened.png")
+        # page.screenshot(path="profile_opened.png") #For debugging purpose
 
         # --------------------------------
         # CLICK MESSAGE BUTTON
@@ -419,7 +268,7 @@ def send_dm(page, username):
 
         time.sleep(5)
 
-        page.screenshot(path="message_sidebar.png")
+        # page.screenshot(path="message_sidebar.png") #For debugging purpose
 
         # --------------------------------
         # CLICK NEW MESSAGE BUTTON
@@ -460,14 +309,14 @@ def send_dm(page, username):
 
         if not new_message_clicked:
 
-            page.screenshot(path="new_message_fail.png")
+            # page.screenshot(path="new_message_fail.png") #For debugging purpose
 
             print("Could not click new message")
             return
 
         time.sleep(4)
 
-        page.screenshot(path="new_message_popup.png")
+        # page.screenshot(path="new_message_popup.png") #For debugging purpose
 
         # --------------------------------
         # SEARCH USERNAME
@@ -512,14 +361,14 @@ def send_dm(page, username):
 
         if not search_found:
 
-            page.screenshot(path="search_fail.png")
+            # page.screenshot(path="search_fail.png") #For debugging purpose
 
             print("Search box not found")
             return
 
         time.sleep(5)
 
-        page.screenshot(path="username_search_result.png")
+        # page.screenshot(path="username_search_result.png") #For debugging purpose
 
         # --------------------------------
         # SELECT USER CORRECTLY
@@ -532,7 +381,7 @@ def send_dm(page, username):
             # wait for search result to appear
             time.sleep(6)
 
-            page.screenshot(path="before_user_selection.png")
+            # page.screenshot(path="before_user_selection.png") #For debugging purpose
 
             # locate all visible rows
             rows = page.locator('div[role="button"]')
@@ -593,7 +442,7 @@ def send_dm(page, username):
 
             if not selected:
 
-                page.screenshot(path="user_select_fail.png")
+                # page.screenshot(path="user_select_fail.png") #For debugging purpose
 
                 print("Could not select user")
 
@@ -603,7 +452,7 @@ def send_dm(page, username):
 
             print("USER SELECT FAILED:", e)
 
-            page.screenshot(path="user_select_exception.png")
+            # page.screenshot(path="user_select_exception.png") #For debugging purpose
 
             return
         
@@ -644,13 +493,13 @@ def send_dm(page, username):
 
         if not chat_clicked:
 
-            page.screenshot(path="chat_button_fail.png")
+            # page.screenshot(path="chat_button_fail.png") #For debugging purpose
 
             return
 
         time.sleep(6)
 
-        page.screenshot(path="chat_opened.png")
+        # page.screenshot(path="chat_opened.png") #For debugging purpose
 
         # --------------------------------
         # FIND MESSAGE INPUT
@@ -660,7 +509,7 @@ def send_dm(page, username):
 
         time.sleep(5)
 
-        page.screenshot(path="before_typing.png")
+        # page.screenshot(path="before_typing.png") #For debugging purpose
 
         message_selectors = [
 
@@ -718,7 +567,7 @@ def send_dm(page, username):
 
         if not typed:
 
-            page.screenshot(path="message_box_fail.png")
+            # page.screenshot(path="message_box_fail.png") #For debugging purpose
 
             print("Message input not found")
 
@@ -804,53 +653,16 @@ def main():
         ]
         )
 
-        # browser = context.browser
-        #---------End of Changes--------#
-        #---------Begin of Changes--------#
-        #Commenting below code to fix login issue and adding manual step to complete login
-        # SESSION_FILE = "session.json"
-
-        # if os.path.exists(SESSION_FILE):
-        #     print("Using saved session")
-        #     context = browser.new_context(
-        #         storage_state=SESSION_FILE,
-        #         viewport={"width": 1366, "height": 768}
-        #     )
-        # else:
-        #     print("No session found. First login.")
-        #     context = browser.new_context(
-        #         viewport={"width": 1366, "height": 768}
-        #     )
-        #---------End of Changes--------#
         context.add_init_script(
             "Object.defineProperty(navigator, 'webdriver', {get: () => false})"
         )
 
-        # page = context.new_page()
         # Reuse existing tab if available
         if len(context.pages) > 0:
             page = context.pages[0]
         else:
             page = context.new_page()
-        # page = browser.new_page()
 
-        # page.goto("https://www.instagram.com/accounts/login/", wait_until="networkidle")
-        # page.goto("https://www.instagram.com/accounts/login/", wait_until="domcontentloaded", timeout=30000)
-        # time.sleep(5)
-        # page.screenshot(path="debug_login.png")
-        # print("Page loaded, attempting to find username input...")
-        # page.wait_for_selector('input[name=\"username\"]', timeout=60000)
-
-        # if os.path.exists(SESSION_FILE):#replacing with below code to fix login issue and adding manual step to complete login
-        # if os.path.exists("ig_user_data"):
-        #     page.goto("https://www.instagram.com/")
-        #     time.sleep(8)
-
-        # else:
-        # page.goto("https://www.instagram.com/")
-        # time.sleep(8)
-        # print("Current URL after startup:", page.url)
-        # page.screenshot(path="startup_state.png")
         page.goto(f"https://www.instagram.com/{USERNAME}/",
         wait_until="domcontentloaded",
         timeout=90000)
@@ -880,64 +692,17 @@ def main():
                 print("Instagram load timeout, continuing anyway...")    
 
             print("Current URL:", page.url)
-            page.screenshot(path="local_debug.png")
+            print("\n==============================")
+            print("MANUAL LOGIN REQUIRED")
+            print("1. Enter username")
+            print("2. Enter password")
+            print("3. Complete OTP")
+            print("4. Click 'Save Login Info'")
+            print("5. Reach Instagram Home Feed")
+            print("==============================\n")
 
-            selectors = [
-                'input[name="username"]',
-                'input[aria-label="Phone number, username, or email"]',
-                'input[type="text"]'
-            ]
+            input("After login is completely finished, press Enter...")
 
-            found = False
-
-            for selector in selectors:
-                try:
-                    page.wait_for_selector(selector, timeout=15000)
-                    page.fill(selector, USERNAME)
-                    found = True
-                    print("Username field found:", selector)
-                    break
-                except:
-                    continue
-
-            if not found:
-                page.screenshot(path="failed_login.png")
-                raise Exception("Login field not found")
-
-            page.locator('input[type="password"]').fill(PASSWORD)
-            # page.locator('button[type="submit"]').click()#commenting to fix loggin issue
-            #------Begin of Changes--------#
-            login_selectors = [
-                'button[type="submit"]',
-                'button:has-text("Log in")',
-                'button:has-text("Log In")',
-                'div[role="button"]:has-text("Log in")'
-            ]
-
-            clicked = False
-
-            for btn in login_selectors:
-                try:
-                    page.locator(btn).first.wait_for(timeout=5000)
-                    page.locator(btn).first.click()
-                    print("Clicked login using:", btn)
-                    clicked = True
-                    break
-                except:
-                    continue
-
-            if not clicked:
-                page.screenshot(path="login_button_fail.png")
-                input("Login button not auto-clicked. Press Enter after clicking manually...")
-    #---------End of Changes--------#
-    #---------Begin of Changes--------#
-    #Commenting below code to fix login issue and adding manual step to complete login
-            # print("Complete OTP manually if prompted...")
-            # time.sleep(30)
-
-            # context.storage_state(path=SESSION_FILE)
-            # print("Session saved")
-    #----------------------------------------
             print("Waiting for successful login...")
 
             logged_in = False
@@ -951,8 +716,6 @@ def main():
 
                 try:
                     # check for Instagram home/profile UI
-                    # page.wait_for_load_state("networkidle", timeout=5000)
-                    # page.locator('svg[aria-label="Home"]').first.wait_for(timeout=3000)
                     page.locator('a[href="/direct/inbox/"]').first.wait_for(timeout=5000)
 
                     logged_in = True
@@ -977,17 +740,10 @@ def main():
 
             if not logged_in:
 
-                page.screenshot(path="login_failed.png")
+                # page.screenshot(path="login_failed.png") #For debugging purpose
                 raise Exception("Login failed after waiting")
             # # wait for Instagram to fully stabilize after login
-            # time.sleep(10)
-
-            # # ensure homepage fully loaded
-            # page.goto("https://www.instagram.com/")
-            # time.sleep(5)
-
-            # print("Instagram fully loaded after login")
-    #---------End of Changes--------#        
+        
 
         print("Waiting before follower scraping...")
         time.sleep(15)
@@ -998,17 +754,20 @@ def main():
         for user in new_users:
             send_dm(page, user)
 
-        # known.update(new_users)
-        # save_db(known)
+
         # overwrite DB with latest followers list
         save_db(set(followers))
 
         # browser.close()#Temporary commenting to keep the browser open for debugging
         #---------Begin of Changes--------#
-        input("Press Enter to close browser...")
-        # wait few seconds before closing so session fully persists
-        # time.sleep(5)
-        # context.close()
+        # input("Press Enter to close browser...")
+        print("Saving browser profile...")
+        time.sleep(10)
+
+        context.close()
+
+        print("Session saved successfully")
+
         #---------End of Changes--------#
 
 if __name__ == "__main__":

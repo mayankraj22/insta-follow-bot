@@ -39,13 +39,21 @@ The solution uses:
 # Features
 
 1 Persistent login using Playwright user profile
+
 2 One-time manual login
+
 3 Automatic session reuse
+
 4 Automatic follower scraping
+
 5 Detects only new followers
+
 6 Sends welcome DM automatically
+
 7 Prevents duplicate messaging
+
 8 Handles Instagram UI changes with fallback selectors
+
 9 Local storage using JSON
 ---
 

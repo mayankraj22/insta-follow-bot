@@ -15,366 +15,484 @@ Creating bot to enable auto dm feature on follow business account
 2. Need to manually click the button ,a otp is sent for verification at gmail
 
 \---------------------------Final------------------------------------------------------
-# Instagram Auto DM Bot using Playwright
+# Instagram Auto DM Bot (Playwright + Python)
 
 ## Overview
 
-This project automatically sends a welcome Direct Message (DM) to new Instagram followers.
+This project automatically:
 
-The bot:
+1. Logs into Instagram using a persistent browser profile.
+2. Detects new followers of a business account.
+3. Stores previously processed followers.
+4. Sends a predefined DM only to newly detected followers.
+5. Prevents duplicate DMs by maintaining a local database.
 
-* Logs into Instagram using a persistent browser profile
-* Scrapes followers from a business account
-* Detects newly added followers
-* Opens each follower profile
-* Navigates through Instagram's messaging UI
-* Sends a predefined onboarding message
-* Maintains a follower database to avoid reprocessing existing followers
+The solution uses:
 
----
-
-## Features
-
-### Persistent Login
-
-Uses Playwright Persistent Context to preserve Instagram sessions.
-
-Benefits:
-
-* No repeated login prompts
-* Reduced OTP challenges
-* Session survives script restarts
+* Python
+* Playwright
+* Persistent Browser Profile (`ig_user_data`)
+* Instagram Web Interface
 
 ---
 
-### Automatic Follower Scraping
+# Features
 
-The bot:
-
-1. Opens the target Instagram profile
-2. Opens the Followers popup
-3. Scrolls through the followers list
-4. Extracts usernames
-5. Ignores:
-
-   * Suggested accounts
-   * Instagram system links
-   * Invalid usernames
-
+1 Persistent login using Playwright user profile
+2 One-time manual login
+3 Automatic session reuse
+4 Automatic follower scraping
+5 Detects only new followers
+6 Sends welcome DM automatically
+7 Prevents duplicate messaging
+8 Handles Instagram UI changes with fallback selectors
+9 Local storage using JSON
 ---
 
-### New Follower Detection
-
-Follower data is stored in:
+# Project Structure
 
 ```text
-followers.json
+insta-follow-bot/
+│
+├── main.py
+├── followers.json
+├── ig_user_data/
+├── requirements.txt
+└── README.md
 ```
 
-Workflow:
+### File Description
 
-1. Read previously known followers
-2. Scrape current followers
-3. Identify new followers
-4. Send DM only to newly detected accounts
-
----
-
-### Automated DM Flow
-
-For every new follower:
-
-1. Open follower profile
-2. Click Message
-3. Open New Message drawer
-4. Search follower username
-5. Select matching search result
-6. Click Chat
-7. Type onboarding message
-8. Send message
+| File             | Purpose                        |
+| ---------------- | ------------------------------ |
+| main.py          | Main automation script         |
+| followers.json   | Stores processed followers     |
+| ig_user_data     | Stores Instagram login session |
+| requirements.txt | Python dependencies            |
+| README.md        | Project documentation          |
 
 ---
 
-## Current Message Template
+# Installation
 
-```text
+## Clone Repository
+
+```bash
+git clone <your-repository-url>
+cd insta-follow-bot
+```
+
+---
+
+## Create Virtual Environment
+
+Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+Mac/Linux
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Install Playwright Browsers
+
+```bash
+playwright install
+```
+
+---
+
+# Configuration
+
+Update these variables in `main.py`
+
+```python
+USERNAME = "your_instagram_username"
+PASSWORD = "your_password"
+```
+
+Update the welcome message:
+
+```python
+MESSAGE = """
 Hi 👋 Thanks for following.
 
-We are onboarding creators.
+We are GTM Engineers.
 
 Reply with:
 Category
 Platform
-Follower count
-```
-
-Can be modified using the MESSAGE variable.
-
----
-
-## Project Structure
-
-```text
-project/
-│
-├── main.py
-├── followers.json
-├── ig_user_data/ # Gets auto created to sync business acc login info for every DM workflow
-├── profile_loaded.png
-├── profile_opened.png
-├── message_sidebar.png
-├── username_search_result.png
-├── before_typing.png
-│
-└── README.md
+"""
 ```
 
 ---
 
-## Installation
+# First Time Setup (Manual Login)
 
-### 1. Clone Repository
+The first run requires manual login.
 
-```bash
-git clone <repository-url>
-cd instagram-auto-dm
-```
-
-### 2. Install Dependencies
-
-```bash
-pip install playwright
-```
-
-### 3. Install Browser
-
-```bash
-playwright install chromium
-```
-
----
-
-## Configuration
-
-Update credentials in:
-
-```python
-USERNAME = "your_business_account"
-PASSWORD = "your_password"
-```
-
-Recommended:
-
-```python
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
-```
-
-and store secrets as environment variables.
-
----
-
-## First Login
-
-Run the script:
-
-```bash
-python main.py
-```
-
-On first run:
-
-1. Instagram login page opens
-2. Credentials are filled automatically
-3. Complete OTP manually only for first time
-4. Session is stored in:
+Delete any existing profile if needed:
 
 ```text
 ig_user_data/
 ```
 
-Subsequent runs reuse the session.
+Then run:
 
----
-
-## Instagram UI Flow Implemented
-
-Follower Profile
-
-↓
-
-Message
-
-↓
-
-New Message
-
-↓
-
-Search Username
-
-↓
-
-Select User
-
-↓
-
-Chat
-
-↓
-
-Type Message
-
-↓
-
-Send
-
----
-
-## Playwright Configuration
-
-Current browser configuration:
-
-```python
-context = p.chromium.launch_persistent_context(
-    "ig_user_data",
-    headless=False,
-    slow_mo=1000,
-    viewport={
-        "width": 1366,
-        "height": 768
-    }
-)
+```bash
+python main.py
 ```
 
-Additional anti-detection flags:
-
-```python
---disable-blink-features=AutomationControlled
---disable-dev-shm-usage
---no-sandbox
-```
-
----
-
-## Debug Screenshots
-
-The bot automatically captures screenshots during execution.
-
-Examples:
+The script will display:
 
 ```text
-profile_loaded.png
-profile_opened.png
-message_sidebar.png
-new_message_popup.png
-username_search_result.png
-chat_opened.png
-before_typing.png
+MANUAL LOGIN REQUIRED
+
+1. Enter username
+2. Enter password
+3. Complete OTP
+4. Click Save Login Info
+5. Reach Instagram Home Feed
 ```
 
-Useful for troubleshooting Instagram UI changes.
+Complete the login manually inside the opened browser.
+
+After reaching the Instagram home page:
+
+```text
+Press Enter...
+```
+
+The script will verify login and save the browser session.
 
 ---
 
-## Known Instagram Limitations
+# Session Persistence
 
-Instagram frequently changes:
+The project uses:
 
-* DOM structure
-* Selectors
-* Messaging UI
-* Follower popup layout
+```python
+launch_persistent_context()
+```
 
-If automation breaks:
+with:
 
-1. Review latest screenshots
-2. Inspect Instagram DOM
-3. Update affected selectors
+```python
+USER_DATA_DIR = "ig_user_data"
+```
+
+This stores:
+
+* Cookies
+* Local Storage
+* Login Session
+* Device Trust Information
+
+inside:
+
+```text
+ig_user_data/
+```
+
+Future executions reuse this session.
+
+No OTP is required unless Instagram invalidates the session.
 
 ---
 
-## Best Practices
+# How It Works
 
-### Add Random Delays
+## Step 1
+
+Open Instagram profile
+
+```text
+https://www.instagram.com/<username>/
+```
+
+---
+
+## Step 2
+
+Open Followers Popup
+
+The bot locates the followers button using multiple fallback selectors.
+
+---
+
+## Step 3
+
+Scrape Followers
+
+The popup is scrolled multiple times.
+
+The bot extracts usernames from profile links.
 
 Example:
 
-```python
-import random
-
-time.sleep(random.randint(3, 7))
+```text
+/john_doe/
 ```
 
-Helps mimic human behavior.
+becomes
+
+```text
+john_doe
+```
 
 ---
 
-### Limit DM Volume
+## Step 4
 
-Avoid:
+Remove Invalid Entries
 
-* Sending hundreds of DMs quickly
-* Excessive profile visits
-* Repetitive actions
+Ignored entries:
 
-Instagram may apply temporary restrictions.
+```text
+explore
+accounts
+reels
+stories
+direct
+```
 
----
+Also ignores:
 
-### Verify DM Delivery
+```text
+Suggested for you
+```
 
-Consider:
-
-* Detecting sent message bubbles
-* Checking Send button state
-* Capturing post-send screenshots
-
----
-
-## Future Enhancements
-
-### Cloud Hosting
-
-Possible deployment options:
-
-* Railway
-* Render
-* VPS
-* AWS EC2
-* DigitalOcean
-
-Persistent browser storage is recommended.
+recommendations.
 
 ---
 
-### Additional Features
+## Step 5
 
-* Personalized messages
-* Multiple message templates
-* Creator qualification forms
-* Google Sheets integration
-* CRM integration
-* Lead tracking dashboard
-* DM success reporting
-* Retry mechanism
+Compare Against Database
+
+Existing users:
+
+```json
+[
+  "user1",
+  "user2"
+]
+```
+
+are loaded from:
+
+```text
+followers.json
+```
+
+New followers are calculated as:
+
+```python
+new_users = set(followers) - known
+```
 
 ---
 
-## Disclaimer
+## Step 6
 
-This project automates interactions with Instagram's web interface using browser automation.
+Send DM
 
-Instagram may change its UI, policies, or rate limits at any time. Use responsibly and monitor account activity to avoid restrictions.
+For every new follower:
+
+1. Open profile
+2. Click Message
+3. Open New Message dialog
+4. Search username
+5. Select user
+6. Click Chat
+7. Type message
+8. Send message
 
 ---
 
-## Status
+## Database
 
-Current Status: Working
+Processed followers are stored in:
 
-Verified Flow:
+```text
+followers.json
+```
 
-Login → Follower Scraping → New Follower Detection → DM Navigation → User Selection → Chat Creation → Message Sending
+Example:
 
+```json
+[
+  "john_doe",
+  "jane_smith",
+  "creator123"
+]
+```
 
+This prevents sending duplicate DMs.
+
+---
+
+# Running the Bot
+
+```bash
+python main.py
+```
+
+Typical output:
+
+```text
+Existing login session detected
+
+Followers popup opened
+
+FINAL FOLLOWERS:
+{'user1', 'user2'}
+
+Fetched followers:
+['user1', 'user2']
+
+DM SENT TO:
+user1
+```
+
+---
+
+# Reset Login Session
+
+If Instagram logs out unexpectedly:
+
+1. Close the bot
+2. Delete:
+
+```text
+ig_user_data/
+```
+
+3. Run:
+
+```bash
+python main.py
+```
+
+4. Perform manual login again
+
+A fresh session will be saved.
+
+---
+
+# Common Issues
+
+## Login Page Keeps Loading
+
+Possible causes:
+
+* Instagram temporary rate limiting
+* VPN usage
+* Network issues
+* Corrupted browser profile
+
+Fix:
+
+```text
+Delete ig_user_data
+```
+
+and perform manual login again.
+
+---
+
+## OTP Appears Again
+
+Instagram may invalidate sessions when:
+
+* Password changes
+* Suspicious login activity
+* New device detection
+* Cookie expiration
+
+Fix:
+
+```text
+Delete ig_user_data
+```
+
+and login again.
+
+---
+
+## Followers Not Detected
+
+Instagram frequently changes DOM structure.
+
+Current implementation includes multiple fallback selectors, but future updates may require selector adjustments.
+
+---
+
+## DM Not Sent
+
+Possible causes:
+
+* User disabled DMs
+* Instagram restrictions
+* Selector changes
+* Temporary rate limits
+
+Check terminal logs for the failed step.
+
+---
+
+# Important Notes
+
+* Use responsibly.
+* Excessive DMs may trigger Instagram anti-spam systems.
+* Avoid sending large volumes in a short time.
+* Keep delays between actions.
+* Monitor account health regularly.
+
+---
+
+# Future Improvements
+
+* Cloud deployment
+* Scheduled execution
+* Multi-account support
+* CSV logging
+* SQLite database
+* AI-generated personalized messages
+* Automatic retry logic
+* Docker support
+* GitHub Actions support
+
+---
+
+# Tech Stack
+
+* Python
+* Playwright
+* Chromium
+* JSON Storage
+* Instagram Web
+
+---
+
+# License
+
+This project is intended for educational and personal automation purposes.
+
+Use at your own risk and comply with Instagram Terms of Service.

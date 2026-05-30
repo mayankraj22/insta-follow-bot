@@ -4,10 +4,10 @@ import json
 import time
 from playwright.sync_api import sync_playwright
 
-# USERNAME = os.getenv("USERNAME")#For running it locally commented
-USERNAME = "gtm_roadmap"
-# PASSWORD = os.getenv("PASSWORD")#For running it locally commented
-PASSWORD = "testing@123"
+USERNAME = os.getenv("USERNAME")#For running it locally comment
+# USERNAME = "username_here" #For running it locally uncomment
+PASSWORD = os.getenv("PASSWORD")#For running it locally comment
+# PASSWORD = "password_here" #For running it locally uncomment
 
 DB_FILE = "followers.json"
 

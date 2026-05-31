@@ -505,7 +505,10 @@ This project is intended for educational and personal automation purposes.
 
 Use at your own risk and comply with Instagram Terms of Service.
 
-\----------------------------For Final Production------------------------------------
+---
+
+# For Final Production
+
 To make the solution production-ready, the automation can be deployed on a VPS or cloud server where it runs 24/7 without requiring a personal laptop. 
 
 The setup involves hosting the Python + Playwright application on a Windows VPS or cloud VM, performing a one-time manual Instagram login, and securely storing the authenticated browser profile in a persistent ig_user_data directory. 
